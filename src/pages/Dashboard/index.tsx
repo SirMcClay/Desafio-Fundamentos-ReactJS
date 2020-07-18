@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { format } from 'util';
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
 import total from '../../assets/total.svg';
@@ -10,6 +9,7 @@ import api from '../../services/api';
 import Header from '../../components/Header';
 
 import formatValue from '../../utils/formatValue';
+import formatDate from '../../utils/formatDate';
 
 import { Container, CardContainer, Card, TableContainer } from './styles';
 
@@ -40,14 +40,20 @@ const Dashboard: React.FC = () => {
 
       const transactionsFormatted: Transaction[] = response.data.transactions;
 
-      transactionsFormatted.map(transaction => {
-        transaction.formattedValue = formatValue(Number(transaction.value));
-        return transaction;
-      });
+      transactionsFormatted.map(
+        (transaction: Transaction): Transaction => {
+          const transactionParse = transaction;
 
-      console.log(transactionsFormatted);
+          transactionParse.formattedValue = formatValue(transaction.value);
+          transactionParse.formattedDate = formatDate(transaction.created_at);
 
-      setTransactions(response.data.transactions);
+          return transaction;
+        },
+      );
+
+      // console.log(transactionsFormatted);
+
+      setTransactions(transactionsFormatted);
       setBalance(response.data.balance);
     }
 
@@ -104,10 +110,11 @@ const Dashboard: React.FC = () => {
                 <tr key={transaction.id}>
                   <td className="title">{transaction.title}</td>
                   <td className={transaction.type}>
-                    {formatValue(transaction.value)}
+                    {transaction.type === 'outcome' ? '- ' : ''}
+                    {transaction.formattedValue}
                   </td>
                   <td>{transaction.category.title}</td>
-                  <td>{transaction.created_at}</td>
+                  <td>{transaction.formattedDate}</td>
                 </tr>
               ))}
             </tbody>
