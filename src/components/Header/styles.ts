@@ -31,6 +31,16 @@ export const Container = styled.div<ContainerProps>`
           opacity: 0.6;
         }
       }
+
+      a.on {
+        padding-bottom: 10px;
+        border-bottom: solid 2px #c53030;
+        cursor: default;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
   }
 `;
